@@ -1,0 +1,3 @@
+NameError in file /home/naco3124/snakemake/main.smk, line 12:
+name 'output_dir' is not defined
+  File "/home/naco3124/snakemake/main.smk", line 12, in <module>

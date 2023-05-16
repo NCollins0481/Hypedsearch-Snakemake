@@ -1,0 +1,3 @@
+WorkflowError in file /home/naco3124/snakemake/main.smk, line 3:
+Config file is not valid JSON or YAML. In case of YAML, make sure to not mix whitespace and tab indentation.
+  File "/home/naco3124/snakemake/main.smk", line 3, in <module>

@@ -1,0 +1,2 @@
+SyntaxError in file /home/naco3124/snakemake/main.smk, line 41:
+invalid syntax. Perhaps you forgot a comma?

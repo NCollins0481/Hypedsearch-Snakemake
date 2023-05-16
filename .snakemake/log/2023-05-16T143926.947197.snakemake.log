@@ -1,0 +1,37 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job         count    min threads    max threads
+--------  -------  -------------  -------------
+All             1              1              1
+RunComet        1              1              1
+total           2              1              1
+
+Select jobs to execute...
+
+[Tue May 16 14:39:27 2023]
+rule RunComet:
+    input: /home/naco3124/snakemake/bin_directory/comet, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn6.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn5.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn9.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn4.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn7.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn8.mzML, /home/naco3124/snakemake/database
+    output: /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn6.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn5.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn9.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn4.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn7.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn8.txt
+    jobid: 1
+    reason: Missing output files: /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn9.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn7.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn5.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn8.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn6.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn4.txt
+    resources: tmpdir=/tmp
+
+[Tue May 16 14:39:27 2023]
+Error in rule RunComet:
+    jobid: 1
+    input: /home/naco3124/snakemake/bin_directory/comet, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn6.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn5.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn9.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn4.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn7.mzML, /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn8.mzML, /home/naco3124/snakemake/database
+    output: /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn6.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn5.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn9.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn4.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn7.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn8.txt
+    shell:
+        
+        /home/naco3124/snakemake/bin_directory/comet -D/home/naco3124/snakemake/database /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn6.mzML /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn5.mzML /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn9.mzML /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn4.mzML /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn7.mzML /home/naco3124/snakemake/spectra/BMEM_AspN_Fxn8.mzML
+        mkdir -p /home/naco3124/snakemake/output/comet_run_1
+        bash mover.sh /home/naco3124/snakemake/bin_directory /home/naco3124/snakemake/output/comet_run_1
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2023-05-16T143926.947197.snakemake.log

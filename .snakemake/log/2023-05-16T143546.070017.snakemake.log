@@ -1,0 +1,6 @@
+Building DAG of jobs...
+MissingInputException in rule RunComet in file /home/naco3124/snakemake/main.smk, line 34:
+Missing input files for rule RunComet:
+    output: /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn6.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn5.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn9.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn4.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn7.txt, /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn8.txt
+    affected files:
+        /home/naco3124/snakemake/database/BMEM_searches_database.fasta

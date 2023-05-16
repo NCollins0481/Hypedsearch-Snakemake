@@ -1,0 +1,3 @@
+WorkflowError in file /home/naco3124/snakemake/main.smk, line 3:
+Workflow defines configfile snakemake/conf/config.yaml but it is not present or accessible (full checked path: /home/naco3124/snakemake/snakemake/conf/config.yaml).
+  File "/home/naco3124/snakemake/main.smk", line 3, in <module>

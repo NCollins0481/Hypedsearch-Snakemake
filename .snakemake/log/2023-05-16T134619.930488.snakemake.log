@@ -1,0 +1,3 @@
+NameError in file /home/naco3124/snakemake/main.smk, line 16:
+name 'spectra' is not defined
+  File "/home/naco3124/snakemake/main.smk", line 16, in <module>
