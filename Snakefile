@@ -12,9 +12,10 @@ for (root, _, filenames) in os.walk(config.spectra_dir):
 spectra_files = [spectra_files[0]]
 
 database_file = config.database_file
-database_dir = "/home/naco3124/snakemake/database"
+database_dir = "/home/naco3124/snakemake/database" #Don't forget to set this as wildcard later
 output_dir = config.output_dir
 bin_directory = config.bin_direc
+environment_directory = "/home/naco3124/snakemake/environments" #Don't forget to set this as wildcard later
 
 base_files = []
 for file in spectra_files:
@@ -24,7 +25,7 @@ for file in spectra_files:
 
 rule All:
     input:
-        filtered_db = f'{database_dir}/Comet_filtered_{database_file}.fasta'
+        filtered_db = f'{database_dir}/Comet_filtered_db.fasta'
 
 rule GetComet:
     output:
@@ -61,10 +62,13 @@ rule GetHypedsearchDependencies:
 
 rule Condensedatabase:
     input:
+        dependencies = f'{config.bin_direc}/HS_dependencies',
         output_texts = rules.RunComet.output.output_texts
     output:
-        filtered_db = f'{database_dir}/Comet_filtered_{database_file}.fasta'
+        filtered_db = f'{database_dir}/Comet_filtered_db.fasta'
+    conda:
+        f'{environment_directory}/Hypedsearch.yaml'
     shell:
-        """
-        python3 -m filter_database.py {config.spectra_dir} {config.database_file}
+        f"""
+        python3 -m filter_database.py {{config.spectra_dir}} {{config.database_file}}
         """

@@ -15,8 +15,6 @@ def build_table(directory):
                 A = line.split('\t')
                 seq = A[21]
                 id = A[14].strip('\"')
-                if "BMEM" in id:
-                    print(A)
                 sequences.append(seq)
                 ids.append(id)
     return sequences, ids

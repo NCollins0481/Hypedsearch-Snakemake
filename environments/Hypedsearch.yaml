@@ -1,2 +1,13 @@
+name: Hypedsearch
+channels:
+  - conda-forge
+  - pytorch
+  - bioconda
+  - defaults
 dependencies:
-  - pyteomics
+  - python>=3.6
+  - anaconda
+  - numpy
+  - pip
+  - pip:
+    - pyteomics
