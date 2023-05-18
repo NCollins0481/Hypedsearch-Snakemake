@@ -1,1 +1,1 @@
-# Hypedsearch-Snakemake
+# Snakemake pipeline for Hypedsearch
