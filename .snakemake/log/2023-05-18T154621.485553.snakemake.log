@@ -1,0 +1,35 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job                 count    min threads    max threads
+----------------  -------  -------------  -------------
+All                     1              1              1
+Condensedatabase        1              1              1
+total                   2              1              1
+
+Select jobs to execute...
+
+[Thu May 18 15:46:22 2023]
+rule Condensedatabase:
+    input: /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn6.txt
+    output: /home/naco3124/snakemake/database/Comet_filtered_/home/naco3124/snakemake/database/UniProt_with_good_hybrids.fasta.fasta
+    jobid: 1
+    reason: Missing output files: /home/naco3124/snakemake/database/Comet_filtered_/home/naco3124/snakemake/database/UniProt_with_good_hybrids.fasta.fasta
+    resources: tmpdir=/tmp
+
+[Thu May 18 15:46:22 2023]
+Error in rule Condensedatabase:
+    jobid: 1
+    input: /home/naco3124/snakemake/output/comet_run_1/BMEM_AspN_Fxn6.txt
+    output: /home/naco3124/snakemake/database/Comet_filtered_/home/naco3124/snakemake/database/UniProt_with_good_hybrids.fasta.fasta
+    shell:
+        
+        python3 -m filter_database.py /home/naco3124/snakemake/spectra /home/naco3124/snakemake/database/UniProt_with_good_hybrids.fasta
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2023-05-18T154621.485553.snakemake.log

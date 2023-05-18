@@ -1,0 +1,23 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job                           count    min threads    max threads
+--------------------------  -------  -------------  -------------
+GetHypedsearchDependencies        1              1              1
+total                             1              1              1
+
+Select jobs to execute...
+
+[Thu May 18 15:07:39 2023]
+rule GetHypedsearchDependencies:
+    output: /home/naco3124/snakemake/bin_directory/HS_dependencies
+    jobid: 0
+    reason: Missing output files: /home/naco3124/snakemake/bin_directory/HS_dependencies
+    resources: tmpdir=/tmp
+
+[Thu May 18 15:07:40 2023]
+Finished job 0.
+1 of 1 steps (100%) done
+Complete log: .snakemake/log/2023-05-18T150738.777891.snakemake.log

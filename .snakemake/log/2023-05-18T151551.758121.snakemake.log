@@ -1,0 +1,3 @@
+AttributeError in file /home/naco3124/snakemake/main.smk, line 26:
+'Rules' object has no attribute 'Condensedatabase'
+  File "/home/naco3124/snakemake/main.smk", line 26, in <module>
