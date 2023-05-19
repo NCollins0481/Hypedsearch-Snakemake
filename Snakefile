@@ -60,7 +60,7 @@ rule GetHypedsearchDependencies:
         wget -O {output.dependencies} https://github.com/levitsky/pyteomics/releases/tag/v4.6
         """
 
-rule Condensedatabase:
+rule CondenseDatabase:
     input:
         dependencies = f'{config.bin_direc}/HS_dependencies',
         output_texts = rules.RunComet.output.output_texts
@@ -70,5 +70,5 @@ rule Condensedatabase:
         f'{environment_directory}/Hypedsearch.yaml'
     shell:
         f"""
-        python3 -m filter_database.py {{config.spectra_dir}} {{config.database_file}}
+        python3 -m filter_database {output_dir}/comet_run_1 {{config.database_file}} {database_dir}
         """

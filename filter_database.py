@@ -1,55 +1,79 @@
 import database
+import glob
 import sys
+import os
 
 comet_results = sys.argv[1]
 prot_path = sys.argv[2]
+prot_dir = sys.argv[3]
 
 proteins = database.build(prot_path)
 
-def build_table(directory):
-    [print(x) for x in directory+"/*.txt"]
-    for filepath in directory+"/*.txt":
-        sequences, ids = [], []
-        with open(filepath, 'r') as t:
-            for line in t:
-                A = line.split('\t')
-                seq = A[21]
-                id = A[14].strip('\"')
-                sequences.append(seq)
-                ids.append(id)
-    return sequences, ids
+# def build_table(directory):
+#     for filepath in directory+"/*.txt":
+#         sequences, ids = [], []
+#         with open(filepath, 'r') as t:
+#             for line in t:
+#                 A = line.split('\t')
+#                 seq = A[11]
+#                 id = A[0].strip('\"')
+#                 sequences.append(seq)
+#                 ids.append(id)
+#     return sequences, ids
+
+def get_parents(directory):
+    parents = []
+    for file in glob.glob(directory + "/*.txt"):
+        with open(file, "r") as f:
+            next(f)
+            for line in f:
+                A = line.split("\t")
+                parent = A[15]
+                parents.append(parent)
+    return parents
     
-specmill_sequences, seq_ids = build_table(comet_results)
-with open("filter_database_testing.txt", 'w') as f:
-    [f.write(x + "\t" + y + "\n") for x in specmill_sequences for y in seq_ids]
+parents = get_parents(comet_results)[1:]
 
-def get_proteins(protein_list, seq_ids, sequences):
-    proteins = []
-    for i, id in enumerate(seq_ids):
-        print("On i=", i)
+def build_small_db(parent_list, proteins):
+    new_proteins = []
+    for parent in parent_list:
         found = False
-        for protein in protein_list:
-            description = protein[0]
-            if id in description:
-                if sequences[i] in protein[1]:
-                    proteins.append(protein)
-                    found = True
-                    continue
-        if 'HYBRID' in id:
-            print(id) #these need to be added manually
-            continue
-        elif not found:
-            print("Not found at", i)
-
-    print(len(seq_ids), len(proteins))
-    new_proteins = set(proteins)
+        line_arr = parent.split(",")
+        # print("line_arr:", line_arr)
+        first_parent = line_arr[0]
+        # print("first_parent:", first_parent)
+        split_parent = first_parent.split("|")
+        # print("split_parent:", split_parent)
+        tag = split_parent[0]
+        # print("tag:", tag)
+        if "DECOY" not in tag:
+            name = split_parent[2]
+            if "Hybrid" not in name:
+                for protein in proteins:
+                    description = protein[0]
+                    if name in description:
+                        found = True
+                        new_proteins.append(protein)
+            else:
+                sections = name.split("--")
+                target_section = sections[-1]
+                left_parent, right_parent = target_section.split("+")
+                for protein in proteins: #TODO: Make this a dictionary
+                    description = protein[0]
+                    if left_parent in description or right_parent in description:
+                        found = True
+                        new_proteins.append(protein)
+        
+        if not found:
+            if "DECOY" not in tag:
+                print("Manually add:", parent)
+        
+    new_proteins = set(new_proteins)
     return new_proteins
-            
-            
 
-all_proteins = get_proteins(proteins.proteins, seq_ids, specmill_sequences)
+all_proteins = build_small_db(parents, proteins.proteins)
 
-with open(prot_path, 'w') as d:
+with open(os.path.join(prot_dir, "Comet_filtered_db.fasta"), 'w') as d:
     for protein in all_proteins:
         d.write('>' + protein[0] + '\n')
         prot_seq = protein[1]
