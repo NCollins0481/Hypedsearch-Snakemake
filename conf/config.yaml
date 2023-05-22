@@ -39,7 +39,7 @@ cores: 1
 # the number of alignments to keep per spectrum
 top_results: 5
 # whether to make a new SQLite database
-new_db: False
+new_db: True
 
 # Extra extra printing options for debugging the application
 debug: False
