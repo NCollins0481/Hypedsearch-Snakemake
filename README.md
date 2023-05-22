@@ -5,9 +5,11 @@ Made for Linux machines. Windows and MacOS compatability in progress.
 
 # Installation
 1. Install [Conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
-2. Install snakemake 
+2. Install Snakemake
 ```bash
 $> conda install -n base -c conda-forge mamba
+$> conda activate base
+$> mamba create -c conda-forge -c bioconda -n snakemake snakemake
 ```
 3. Copy this repository
 ```bash
