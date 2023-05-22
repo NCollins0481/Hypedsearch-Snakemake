@@ -90,7 +90,6 @@ rule RunHypedsearch:
         f'{environment_directory}/Hypedsearch.yaml'
     shell:
         f"""
-        echo {{config.new_db}}
         cd hypedsearch/src
         python3 -m main --spectra-folder {{config.spectra_dir}}\
         --database-file {{input.filtered_database}}\

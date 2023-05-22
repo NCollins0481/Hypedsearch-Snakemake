@@ -1,3 +1,7 @@
 *.snakemake
 *__pycache__
 *unused_data
+*database
+*spectra
+*environments
+*bin_directory
