@@ -4,7 +4,7 @@ Automates a run of Hypedsearch and compares the output to Comet.
 Made for Linux machines. Windows and MacOS compatability in progress.
 
 # Installation
-1. Install [Conda] (https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
+1. Install [Conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html)
 2. Install snakemake 
 ```bash
 $> conda install -n base -c conda-forge mamba
