@@ -9,13 +9,11 @@ for (root, _, filenames) in os.walk(config.spectra_dir):
     for fname in filenames:
         spectra_files.append(os.path.join(root, fname))
 
-spectra_files = [spectra_files[0]]
-
 database_file = config.database_file
-database_dir = "/home/naco3124/snakemake/database" #Don't forget to set this as wildcard later
+database_dir = os.path.dirname(database_file)
 output_dir = config.output_dir
 bin_directory = config.bin_direc
-environment_directory = "/home/naco3124/snakemake/environments" #Don't forget to set this as wildcard later
+environment_directory = os.path.join(os.path.dirname(database_dir), "environments")
 
 base_files = []
 for file in spectra_files:
@@ -25,7 +23,8 @@ for file in spectra_files:
 
 rule All:
     input:
-        filtered_db = f'{database_dir}/Comet_filtered_db.fasta'
+        output_texts = expand(f'{output_dir}/comet_run_2/{{dataset}}.txt', dataset=base_files),
+        output_xml = expand(f'{output_dir}/comet_run_2/{{dataset}}.pep.xml', dataset=base_files)
 
 rule GetComet:
     output:
@@ -47,22 +46,24 @@ rule RunComet:
         output_xml = expand(f'{output_dir}/comet_run_1/{{dataset}}.pep.xml', dataset=base_files)
     shell:
         f"""
+        echo {{input.param_file}} {{input.database_file}} {{input.mzML_files}}
         {{input.comet}} -P{{input.param_file}} -D{{input.database_file}} {{input.mzML_files}}
         mkdir -p {output_dir}/comet_run_1
         bash mover.sh {config.spectra_dir} {output_dir}/comet_run_1
         """
 
-rule GetHypedsearchDependencies:
-    output:
-        dependencies = f'{config.bin_direc}/HS_dependencies'
-    shell:
-        """
-        wget -O {output.dependencies} https://github.com/levitsky/pyteomics/releases/tag/v4.6
-        """
+
+# rule GetHypedsearchDependencies:
+#     output:
+#         dependencies = f'{config.bin_direc}/HS_dependencies'
+#     shell:
+#         """
+#         wget -O {output.dependencies} https://github.com/levitsky/pyteomics/releases/tag/v4.6
+#         """
 
 rule CondenseDatabase:
     input:
-        dependencies = f'{config.bin_direc}/HS_dependencies',
+        # dependencies = rules.GetHypedsearchDependencies.output.dependencies,
         output_texts = rules.RunComet.output.output_texts
     output:
         filtered_db = f'{database_dir}/Comet_filtered_db.fasta'
@@ -70,5 +71,82 @@ rule CondenseDatabase:
         f'{environment_directory}/Hypedsearch.yaml'
     shell:
         f"""
-        python3 -m filter_database {output_dir}/comet_run_1 {{config.database_file}} {database_dir}
+        python3 -m filter_database {{input.output_texts}} {{config.database_file}} {database_dir}
         """
+
+rule RunHypedsearch:
+    input:
+        # config_file = 'conf/config.yaml'
+        # spectra_dir = config.spectra_dir,
+        # database_file = config.database_file,
+        # output_dir = config.output_dir,
+        # min_peptide_len = str(config.min_peptide_len),
+        # max_peptide_len = str(config.max_peptide_len),
+        # ppm_tolerance = str(config.ppm_tolerance),
+        # precursor_tolerance = str(config.precursor_tolerance),
+        # num_peaks = str(config.num_peaks),
+        # relative_abundance = str(config.relative_abundance),
+        # digest = config.digest,
+        # verbose = str(config.verbose),
+        # cores = str(config.cores),
+        # top_results = str(config.top_results),
+        # new_db = str(config.new_db),
+        # debug = str(config.debug),
+        filtered_database = f'{database_dir}/Comet_filtered_db.fasta'
+    output:
+        Hypedsearch_outputs = expand(f'{output_dir}/Hypedsearch_outputs/HS_{{dataset}}.txt', dataset=base_files)
+    conda:
+        f'{environment_directory}/Hypedsearch.yaml'
+    shell:
+        f"""
+        echo {{config.new_db}}
+        cd hypedsearch/src
+        python3 -m main --spectra-folder {{config.spectra_dir}}\
+        --database-file {{input.filtered_database}}\
+        --output-dir {{config.output_dir}} \
+        --min-peptide-len {{config.min_peptide_len}}\
+        --max-peptide-len {{config.max_peptide_len}}\
+        --tolerance {{config.ppm_tolerance}}\
+        --precursor-tolerance {{config.precursor_tolerance}}\
+        --peak-filter {{config.num_peaks}}\
+        --verbose {{config.verbose}}\
+        --cores {{config.cores}}\
+        --new-database {{config.new_db}}\
+        --n {{config.top_results}}
+        """
+        # --digest {{config.digest}}\
+
+rule BuildHybridDatabase:
+    input:
+        # dependencies = rules.GetHypedsearchDependencies.output.dependencies,
+        Hypedsearch_outputs = expand(f'{output_dir}/Hypedsearch_outputs/HS_{{dataset}}.txt', dataset=base_files)
+    output:
+        hybrid_database = f'{database_dir}/HS_hybrid_database.fasta'
+    conda:
+        f'{environment_directory}/Hypedsearch.yaml'
+    shell:
+        f"""
+        python3 -m build_hybrid_database --initial-db {database_file} --HS-outputs {{input.Hypedsearch_outputs}}
+        """
+
+rule RunCometAgain:
+    input:
+        comet = rules.GetComet.output.comet,
+        mzML_files = expand("{spectra_file}", spectra_file=spectra_files),
+        param_file = 'conf/comet.params',
+        database_file = f'{database_dir}/HS_hybrid_database.fasta'
+    output:
+        output_texts = expand(f'{output_dir}/comet_run_2/{{dataset}}.txt', dataset=base_files),
+        output_xml = expand(f'{output_dir}/comet_run_2/{{dataset}}.pep.xml', dataset=base_files)
+    shell:
+        f"""
+        {{input.comet}} -P{{input.param_file}} -D{{input.database_file}} {{input.mzML_files}}
+        mkdir -p {output_dir}/comet_run_2
+        bash mover.sh {config.spectra_dir} {output_dir}/comet_run_2
+        """
+
+rule CompareHypedsearch:
+    input:
+        comet1_texts = expand(f'{output_dir}/comet_run_1/{{dataset}}.txt', dataset=base_files),
+        comet2_texts = expand(f'{output_dir}/comet_run_2/{{dataset}}.txt', dataset=base_files),
+        Hypedsearch_outputs = expand(f'{output_dir}/Hypedsearch_outputs/HS_{{dataset}}.txt', dataset=base_files)

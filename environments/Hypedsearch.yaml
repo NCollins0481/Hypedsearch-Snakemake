@@ -11,3 +11,9 @@ dependencies:
   - pip
   - pip:
     - pyteomics
+    - memory_profiler
+    - numpy
+    - pyteomics
+    - lxml
+    - argparse
+    - pandas

@@ -21,15 +21,15 @@ proteins = database.build(prot_path)
 #                 ids.append(id)
 #     return sequences, ids
 
-def get_parents(directory):
+def get_parents(file):
     parents = []
-    for file in glob.glob(directory + "/*.txt"):
-        with open(file, "r") as f:
-            next(f)
-            for line in f:
-                A = line.split("\t")
-                parent = A[15]
-                parents.append(parent)
+    # for file in result_list:
+    with open(file, "r") as f: #This will break when we have to run on full sample!
+        next(f)
+        for line in f:
+            A = line.split("\t")
+            parent = A[15]
+            parents.append(parent)
     return parents
     
 parents = get_parents(comet_results)[1:]
@@ -77,7 +77,5 @@ with open(os.path.join(prot_dir, "Comet_filtered_db.fasta"), 'w') as d:
     for protein in all_proteins:
         d.write('>' + protein[0] + '\n')
         prot_seq = protein[1]
-        seq_len = len(prot_seq)
-        curr_write = 0
         prot_seq = '\n'.join(prot_seq[i:i+70] for i in range(0, len(prot_seq), 70))
         d.write(prot_seq + "\n\n")
