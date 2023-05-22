@@ -52,15 +52,6 @@ rule RunComet:
         bash mover.sh {config.spectra_dir} {output_dir}/comet_run_1
         """
 
-
-# rule GetHypedsearchDependencies:
-#     output:
-#         dependencies = f'{config.bin_direc}/HS_dependencies'
-#     shell:
-#         """
-#         wget -O {output.dependencies} https://github.com/levitsky/pyteomics/releases/tag/v4.6
-#         """
-
 rule CondenseDatabase:
     input:
         # dependencies = rules.GetHypedsearchDependencies.output.dependencies,

@@ -1,0 +1,3 @@
+[submodule "hypedsearch"]
+	path = hypedsearch
+	url = https://github.com/ryanlayerlab/hypedsearch.git
