@@ -28,7 +28,7 @@ rule All:
 
 rule GetComet:
     output:
-        comet = f'{bin_directory}/comet'
+        comet = f'{bin_directory}/comet.exe'
     shell:
         """
         wget -O {output.comet} https://github.com/UWPR/Comet/releases/download/v2023.01.2/comet.linux.exe
