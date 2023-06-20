@@ -102,6 +102,8 @@ rule RunHypedsearch:
         --verbose {{config.verbose}}\
         --cores {{config.cores}}\
         --new-database {{config.new_db}}\
+        --digest-left {{config.left_digest}}\
+        --digest-right {{config.right_digest}}\
         --n {{config.top_results}}
         """
         # --digest {{config.digest}}\

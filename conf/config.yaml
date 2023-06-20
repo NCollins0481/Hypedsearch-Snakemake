@@ -1,9 +1,9 @@
 # full path to the spectra folder containing all spectra files
 spectra_dir: '/home/naco3124/snakemake/spectra'
 # full path to the .fasta database file
-database_file: '/home/naco3124/snakemake/database/sample_database.fasta'
+database_file: '/home/naco3124/snakemake/database/BMEM_searches_database.fasta'
 # full path to the output directory
-output_dir: '/home/naco3124/snakemake/output'
+output_dir: '/home/naco3124/snakemake/output/'
 # full path to bin directory
 bin_direc: '/home/naco3124/snakemake/bin_directory'
 
@@ -29,8 +29,9 @@ num_peaks: 25
 # in the range (0, 1) 
 relative_abundance: .01
 
-# in vitro digest performed on the sample. Leave '' if none
-digest: ''
+# in vitro digest performed on the sample. Leave '' if none. If multiple, seperate with a ','
+digest_left: ['D']
+digest_right: ['R']
 
 # printing to the console during the run
 verbose: True
@@ -39,7 +40,7 @@ cores: 1
 # the number of alignments to keep per spectrum
 top_results: 5
 # whether to make a new SQLite database
-new_db: True
+new_db: False
 
 # Extra extra printing options for debugging the application
 debug: False
