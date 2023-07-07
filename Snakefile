@@ -67,22 +67,6 @@ rule CondenseDatabase:
 
 rule RunHypedsearch:
     input:
-        # config_file = 'conf/config.yaml'
-        # spectra_dir = config.spectra_dir,
-        # database_file = config.database_file,
-        # output_dir = config.output_dir,
-        # min_peptide_len = str(config.min_peptide_len),
-        # max_peptide_len = str(config.max_peptide_len),
-        # ppm_tolerance = str(config.ppm_tolerance),
-        # precursor_tolerance = str(config.precursor_tolerance),
-        # num_peaks = str(config.num_peaks),
-        # relative_abundance = str(config.relative_abundance),
-        # digest = config.digest,
-        # verbose = str(config.verbose),
-        # cores = str(config.cores),
-        # top_results = str(config.top_results),
-        # new_db = str(config.new_db),
-        # debug = str(config.debug),
         filtered_database = f'{database_dir}/Comet_filtered_db.fasta'
     output:
         Hypedsearch_outputs = expand(f'{output_dir}/Hypedsearch_outputs/HS_{{dataset}}.txt', dataset=base_files)
@@ -94,6 +78,7 @@ rule RunHypedsearch:
         python3 -m main --spectra-folder {{config.spectra_dir}}\
         --database-file {{input.filtered_database}}\
         --output-dir {{config.output_dir}} \
+        --config False
         --min-peptide-len {{config.min_peptide_len}}\
         --max-peptide-len {{config.max_peptide_len}}\
         --tolerance {{config.ppm_tolerance}}\
@@ -102,8 +87,8 @@ rule RunHypedsearch:
         --verbose {{config.verbose}}\
         --cores {{config.cores}}\
         --new-database {{config.new_db}}\
-        --digest-left {{config.left_digest}}\
-        --digest-right {{config.right_digest}}\
+        --digest-left {{config.digest_left}}\
+        --digest-right {{config.digest_right}}\
         --n {{config.top_results}}
         """
         # --digest {{config.digest}}\
