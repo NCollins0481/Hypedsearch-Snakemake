@@ -2,10 +2,23 @@ import database
 import glob
 import sys
 import os
+import argparse
 
-comet_results = sys.argv[1]
-prot_path = sys.argv[2]
-prot_dir = sys.argv[3]
+# comet_results = sys.argv[1]
+# prot_path = sys.argv[2]
+# prot_dir = sys.argv[3]
+parser = argparse.ArgumentParser(description='Tool for making a database from Comet results')
+parser.add_argument('--Comet_results', dest='comet_results', nargs='*', default=[''], type = str)
+parser.add_argument('--prot_path', dest='prot_path', type=str)
+parser.add_argument('--prot_dir', dest='prot_dir', type=str)
+args = parser.parse_args()
+# print(args)
+
+comet_results = args.comet_results
+prot_path = args.prot_path
+prot_dir = args.prot_dir
+
+# print(comet_results, prot_path, prot_dir)
 
 proteins = database.build(prot_path)
 
@@ -21,52 +34,42 @@ proteins = database.build(prot_path)
 #                 ids.append(id)
 #     return sequences, ids
 
-def get_parents(file):
-    parents = []
+def get_parents(file_list):
+    parents = set()
     # for file in result_list:
-    with open(file, "r") as f: #This will break when we have to run on full sample!
-        next(f)
-        for line in f:
-            A = line.split("\t")
-            parent = A[15]
-            parents.append(parent)
+    for file in file_list:
+        with open(file, "r") as f:
+            next(f)
+            next(f)
+            prev_spec_num = -1
+            for line in f:
+                A = line.split("\t")
+                spec_num = A[0]
+                if spec_num != prev_spec_num:
+                    parent_seqs = A[15].split(",")
+                    parent_seq = parent_seqs[0]
+                    if "DECOY" not in parent_seq:
+                        parent = parent_seq.split("|")[2]
+                        parents.add(parent)
+                    prev_spec_num = spec_num
     return parents
-    
-parents = get_parents(comet_results)[1:]
+
+parents = get_parents(comet_results)
 
 def build_small_db(parent_list, proteins):
     new_proteins = []
     for parent in parent_list:
         found = False
-        line_arr = parent.split(",")
-        # print("line_arr:", line_arr)
-        first_parent = line_arr[0]
-        # print("first_parent:", first_parent)
-        split_parent = first_parent.split("|")
-        # print("split_parent:", split_parent)
-        tag = split_parent[0]
-        # print("tag:", tag)
-        if "DECOY" not in tag:
-            name = split_parent[2]
-            if "Hybrid" not in name:
-                for protein in proteins:
-                    description = protein[0]
-                    if name in description:
-                        found = True
-                        new_proteins.append(protein)
-            else:
-                sections = name.split("--")
-                target_section = sections[-1]
-                left_parent, right_parent = target_section.split("+")
-                for protein in proteins: #TODO: Make this a dictionary
-                    description = protein[0]
-                    if left_parent in description or right_parent in description:
-                        found = True
-                        new_proteins.append(protein)
-        
-        if not found:
-            if "DECOY" not in tag:
-                print("Manually add:", parent)
+        if "Hybrid" not in parent:
+            for protein in proteins:
+                description = protein[0]
+                if parent in description:
+                    found = True
+                    new_proteins.append(protein)
+            if found == False:
+                print("investigate")
+        else:
+            print(parent, "not found in proteins")
         
     new_proteins = set(new_proteins)
     return new_proteins

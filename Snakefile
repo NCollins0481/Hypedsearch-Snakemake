@@ -3,6 +3,7 @@ import os
 configfile: 'conf/config.yaml'
 
 config = SimpleNamespace(**config)
+digest_left, digest_right = config.digest_left, config.digest_right
 
 spectra_files = []
 for (root, _, filenames) in os.walk(config.spectra_dir):
@@ -11,6 +12,7 @@ for (root, _, filenames) in os.walk(config.spectra_dir):
 
 database_file = config.database_file
 database_dir = os.path.dirname(database_file)
+print(database_dir)
 output_dir = config.output_dir
 bin_directory = config.bin_direc
 environment_directory = os.path.join(os.path.dirname(database_dir), "environments")
@@ -24,7 +26,8 @@ for file in spectra_files:
 rule All:
     input:
         output_texts = expand(f'{output_dir}/comet_run_2/{{dataset}}.txt', dataset=base_files),
-        output_xml = expand(f'{output_dir}/comet_run_2/{{dataset}}.pep.xml', dataset=base_files)
+        output_xml = expand(f'{output_dir}/comet_run_2/{{dataset}}.pep.xml', dataset=base_files),
+        decoy_database = expand(f'{output_dir}/Hypedsearch_outputs_Decoy/HS_{{dataset}}.txt', dataset=base_files)
 
 rule GetComet:
     output:
@@ -46,7 +49,6 @@ rule RunComet:
         output_xml = expand(f'{output_dir}/comet_run_1/{{dataset}}.pep.xml', dataset=base_files)
     shell:
         f"""
-        echo {{input.param_file}} {{input.database_file}} {{input.mzML_files}}
         {{input.comet}} -P{{input.param_file}} -D{{input.database_file}} {{input.mzML_files}}
         mkdir -p {output_dir}/comet_run_1
         bash mover.sh {config.spectra_dir} {output_dir}/comet_run_1
@@ -62,7 +64,24 @@ rule CondenseDatabase:
         f'{environment_directory}/Hypedsearch.yaml'
     shell:
         f"""
-        python3 -m filter_database {{input.output_texts}} {{config.database_file}} {database_dir}
+        python3 -m filter_database --Comet_results {{input.output_texts}} --prot_path {{config.database_file}} --prot_dir {database_dir}
+        """
+
+        # echo {{input.output_texts}}
+        # echo {{config.database_file}}
+        # echo {database_dir}
+
+
+rule CreateInvertedDB:
+    input:
+        filtered_database = f'{database_dir}/Comet_filtered_db.fasta'
+    output:
+        inv_filtered_db = f'{database_dir}/Decoy_Comet_filtered_db.fasta'
+    conda:
+        f'{environment_directory}/Hypedsearch.yaml'
+    shell:
+        f"""
+        python3 -m decoy_database {{input.filtered_database}} {database_dir}
         """
 
 rule RunHypedsearch:
@@ -77,8 +96,8 @@ rule RunHypedsearch:
         cd hypedsearch/src
         python3 -m main --spectra-folder {{config.spectra_dir}}\
         --database-file {{input.filtered_database}}\
-        --output-dir {{config.output_dir}} \
-        --config False
+        --output-dir {{config.output_dir}}/Hypedsearch_outputs\
+        --no-config\
         --min-peptide-len {{config.min_peptide_len}}\
         --max-peptide-len {{config.max_peptide_len}}\
         --tolerance {{config.ppm_tolerance}}\
@@ -89,7 +108,34 @@ rule RunHypedsearch:
         --new-database {{config.new_db}}\
         --digest-left {{config.digest_left}}\
         --digest-right {{config.digest_right}}\
-        --n {{config.top_results}}
+        --n {{config.top_results}}\
+        """
+
+rule RunHypedsearchDecoy:
+    input:
+        filtered_database = f'{database_dir}/Comet_filtered_db.fasta'
+    output:
+        Hypedsearch_outputs = expand(f'{output_dir}/Hypedsearch_outputs_Decoy/HS_{{dataset}}.txt', dataset=base_files)
+    conda:
+        f'{environment_directory}/Hypedsearch.yaml'
+    shell:
+        f"""
+        cd hypedsearch/src
+        python3 -m main --spectra-folder {{config.spectra_dir}}\
+        --database-file {{input.filtered_database}}\
+        --output-dir {{config.output_dir}}/Hypedsearch_outputs_Decoy\
+        --no-config\
+        --min-peptide-len {{config.min_peptide_len}}\
+        --max-peptide-len {{config.max_peptide_len}}\
+        --tolerance {{config.ppm_tolerance}}\
+        --precursor-tolerance {{config.precursor_tolerance}}\
+        --peak-filter {{config.num_peaks}}\
+        --verbose {{config.verbose}}\
+        --cores {{config.cores}}\
+        --new-database {{config.new_db}}\
+        --digest-left {{config.digest_left}}\
+        --digest-right {{config.digest_right}}\
+        --n {{config.top_results}}\
         """
         # --digest {{config.digest}}\
 
