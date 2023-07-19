@@ -113,7 +113,7 @@ rule RunHypedsearch:
 
 rule RunHypedsearchDecoy:
     input:
-        filtered_database = f'{database_dir}/Comet_filtered_db.fasta'
+        filtered_database = f'{database_dir}/Decoy_Comet_filtered_db.fasta'
     output:
         Hypedsearch_outputs = expand(f'{output_dir}/Hypedsearch_outputs_Decoy/HS_{{dataset}}.txt', dataset=base_files)
     conda:
