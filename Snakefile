@@ -12,7 +12,6 @@ for (root, _, filenames) in os.walk(config.spectra_dir):
 
 database_file = config.database_file
 database_dir = os.path.dirname(database_file)
-print(database_dir)
 output_dir = config.output_dir
 bin_directory = config.bin_direc
 environment_directory = os.path.join(os.path.dirname(database_dir), "environments")
@@ -57,14 +56,14 @@ rule RunComet:
 rule CondenseDatabase:
     input:
         # dependencies = rules.GetHypedsearchDependencies.output.dependencies,
-        output_texts = rules.RunComet.output.output_texts
+        output_texts = rules.RunComet.output.output_texts,
     output:
         filtered_db = f'{database_dir}/Comet_filtered_db.fasta'
     conda:
         f'{environment_directory}/Hypedsearch.yaml'
     shell:
         f"""
-        python3 -m filter_database --Comet_results {{input.output_texts}} --prot_path {{config.database_file}} --prot_dir {database_dir}
+        python3 -m filter_database --Comet_results {{input.output_texts}} --prot_path {{config.database_file}} --prot_dir {database_dir} --auto-includes {{config.user_hybrids}} --digest-left {{config.digest_left}} --digest-right {{config.digest_right}}
         """
 
         # echo {{input.output_texts}}
@@ -149,7 +148,7 @@ rule BuildHybridDatabase:
         f'{environment_directory}/Hypedsearch.yaml'
     shell:
         f"""
-        python3 -m build_hybrid_database --initial-db {database_file} --HS-outputs {{input.Hypedsearch_outputs}}
+        python3 -m build_hybrid_database --initial-db {database_file} --HS-outputs {{input.Hypedsearch_outputs}} --target-hybrids {{config.user_hybrids}}
         """
 
 rule RunCometAgain:

@@ -16,9 +16,11 @@ def invert_database(protein_list):
         decoy_header = ">" + headers[0] + "|" + headers[1] + "|DECOY_" + headers[2]
         
         prot_seq = protein[1]
-        l = list(prot_seq)
-        random.shuffle(l)
-        shuffled = ''.join(l)
+        # l = list(prot_seq) #Shuffling the database
+        # random.shuffle(l)
+        # shuffled = ''.join(l)
+        
+        shuffled = prot_seq[::-1] #Inverting the database
 
         inverted_prot = (decoy_header, shuffled)
         inverted_proteins.append(inverted_prot)

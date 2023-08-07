@@ -6,10 +6,11 @@ import os
 CLI=argparse.ArgumentParser()
 CLI.add_argument("--initial-db", type=str, default='')
 CLI.add_argument("--HS-outputs", nargs="*", type=str, default=[])
+CLI.add_argument("--target-hybrids", nargs="*", type=str, default=[])
 
 args = CLI.parse_args()
 
-def get_hybrids(output_dir):
+def get_hybrids(output_dir, user_hybrids):
     hybrids = []
     for file in output_dir:
         with open(file, "r") as g:
@@ -24,6 +25,11 @@ def get_hybrids(output_dir):
                     protein_name = "sp|P01325|Hypedsearch_Hybrid_" + hybrid_seq + " " + left_parent + "-" + right_parent + " " + hybrid_seq
                     full_protein = (protein_name, hybrid_seq.replace("-", ""))
                     hybrids.append(full_protein)
+    
+    for hybrid_seq in user_hybrids:
+        protein_name = "sp|P01325|User_Hybrid_" + hybrid_seq
+        full_protein = (protein_name, hybrid_seq.replace("-", ""))
+        hybrids.append(full_protein)
     return hybrids
 
 def append_to_existing_db(initial_db_filepath, hybrid_proteins):
@@ -40,5 +46,5 @@ def append_to_existing_db(initial_db_filepath, hybrid_proteins):
             prot_seq = '\n'.join(prot_seq[i:i+70] for i in range(0, len(prot_seq), 70))
             d.write(prot_seq + "\n\n")
             
-HS_hybrids = get_hybrids(args.HS_outputs)
+HS_hybrids = get_hybrids(args.HS_outputs, args.target_hybrids)
 append_to_existing_db(args.initial_db, HS_hybrids)
