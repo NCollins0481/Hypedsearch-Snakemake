@@ -1,9 +1,9 @@
 # full path to the spectra folder containing all spectra files
 spectra_dir: '/home/naco3124/snakemake/spectra'
 # full path to the .fasta database file
-database_file: '/home/naco3124/snakemake/database/BMEM_searches_database.fasta'
+database_file: '/home/naco3124/snakemake/database/Comet_filtered_db.fasta'
 # full path to the output directory
-output_dir: '/home/naco3124/snakemake/output/'
+output_dir: '/home/naco3124/snakemake/output'
 # full path to bin directory
 bin_direc: '/home/naco3124/snakemake/bin_directory'
 
@@ -15,7 +15,7 @@ max_peptide_len: 30
 ppm_tolerance: 20
 # tolerance (in ppm) to allow when matching precursor masses
 precursor_tolerance: 10
-  
+
 #-----------------------------------------------------------
 # NOTE: when using the filtering options below (either the peak
 # filtering or the abundance filtering), only set 1 of the values.
@@ -31,16 +31,21 @@ relative_abundance: .01
 
 # in vitro digest performed on the sample. Leave '' if none. If multiple, seperate with a ','
 digest_left: ['D']
-digest_right: ['R']
+digest_right: ['']
 
 # printing to the console during the run
 verbose: True
 # the number of cores to allow in the search. Should be a number 
-cores: 1
-# the number of alignments to keep per spectrum
-top_results: 5
+cores: 32
+# the number of alignments to keep per hybrid spectrum
+top_hybrids: 5
+# the number of alignments to keep per native spectrum
+top_natives: 1
 # whether to make a new SQLite database
 new_db: False
 
 # Extra extra printing options for debugging the application
 debug: False
+
+# Proteins that must show up in the pipeline
+user_hybrids: ["DLQTLAL-EVE", "DLQTLAL-NAAR", "DLQTLAL-WSRM", "DPGVAQLELGG-EVEDPQVAQLELGGGPGAG"]

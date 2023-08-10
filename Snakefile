@@ -107,8 +107,8 @@ rule RunHypedsearch:
         --new-database {{config.new_db}}\
         --digest-left {{config.digest_left}}\
         --digest-right {{config.digest_right}}\
-        --num-hybrids {{config.num_hybrids}}\
-        --num-natives {{config.num_natives}}\
+        --num-hybrids {{config.top_hybrids}}\
+        --num-natives {{config.top_natives}}\
         """
 
 rule RunHypedsearchDecoy:
@@ -135,8 +135,8 @@ rule RunHypedsearchDecoy:
         --new-database {{config.new_db}}\
         --digest-left {{config.digest_left}}\
         --digest-right {{config.digest_right}}\
-        --num-hybrids {{config.num_hybrids}}\
-        --num-natives {{config.num_natives}}\
+        --num-hybrids {{config.top_hybrids}}\
+        --num-natives {{config.top_natives}}\
         """
         # --digest {{config.digest}}\
 
