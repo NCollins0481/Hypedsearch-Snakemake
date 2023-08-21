@@ -1,7 +1,7 @@
 # full path to the spectra folder containing all spectra files
 spectra_dir: '/home/naco3124/snakemake/spectra'
 # full path to the .fasta database file
-database_file: '/home/naco3124/snakemake/database/Comet_filtered_db.fasta'
+database_file: '/home/naco3124/snakemake/database/UniProt_mouse.fasta'
 # full path to the output directory
 output_dir: '/home/naco3124/snakemake/output'
 # full path to bin directory
@@ -42,7 +42,7 @@ top_hybrids: 5
 # the number of alignments to keep per native spectrum
 top_natives: 1
 # whether to make a new SQLite database
-new_db: False
+new_db: True
 
 # Extra extra printing options for debugging the application
 debug: False

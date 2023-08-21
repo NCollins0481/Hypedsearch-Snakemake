@@ -55,7 +55,6 @@ rule RunComet:
 
 rule CondenseDatabase:
     input:
-        # dependencies = rules.GetHypedsearchDependencies.output.dependencies,
         output_texts = rules.RunComet.output.output_texts,
     output:
         filtered_db = f'{database_dir}/Comet_filtered_db.fasta'
@@ -63,13 +62,12 @@ rule CondenseDatabase:
         f'{environment_directory}/Hypedsearch.yaml'
     shell:
         f"""
-        python3 -m filter_database --Comet_results {{input.output_texts}} --prot_path {{config.database_file}} --prot_dir {database_dir} --auto-includes {{config.user_hybrids}} --digest-left {{config.digest_left}} --digest-right {{config.digest_right}}
+        python3 -m filter_database --Comet_results {{input.output_texts}} --prot_path {{config.database_file}} --prot_dir {database_dir} --auto-includes {{config.user_hybrids}} --digest-left {{config.digest_left}} --digest-right {{config.digest_right}} --peak-filter {{config.num_peaks}} --abundance-filter {{config.relative_abundance}} --spectra-folder {{config.spectra_dir}} --ppm-tolerance {{config.ppm_tolerance}}
         """
 
         # echo {{input.output_texts}}
         # echo {{config.database_file}}
         # echo {database_dir}
-
 
 rule CreateInvertedDB:
     input:
